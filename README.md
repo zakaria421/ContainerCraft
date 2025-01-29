@@ -1,6 +1,6 @@
-# Inception
+# ContainerCraft
 
-**Inception** is a containerized system architecture built using **Docker** and **Docker Compose**. It follows a multi-container approach to deploy a secure and modularized environment while adhering to best DevOps practices.
+**ContainerCraft** is a containerized system architecture built using **Docker** and **Docker Compose**. It follows a multi-container approach to deploy a secure and modularized environment while adhering to best DevOps practices.
 
 ---
 
