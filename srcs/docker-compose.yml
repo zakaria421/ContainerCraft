@@ -1,0 +1,104 @@
+version: "3.8"
+services:
+  mariadb:
+    container_name: mariadb
+    build: /home/zakaria/Desktop/Inception/srcs/requirements/mariadb/.
+    ports:
+      - 0.0.0.0:3306:3306
+    env_file:
+      - .env
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - inception
+    restart: always
+    image: mariadb
+  nginx:
+    container_name: nginx
+    build: /home/zakaria/Desktop/Inception/srcs/requirements/nginx/.
+    ports:
+      - 0.0.0.0:443:443
+    depends_on:
+      - wordpress
+    env_file:
+      - .env
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    restart: always
+    image: nginx
+  wordpress:
+    container_name: wordpress
+    build: /home/zakaria/Desktop/Inception/srcs/requirements/wordpress/.
+    env_file:
+      - .env
+    ports:
+      - 0.0.0.0:9000:9000
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    restart: always
+    image: wordpress
+  redis:
+    container_name: redis
+    build: /home/zakaria/Desktop/Inception/srcs/requirements/bonus/redis/.
+    ports:
+      - 0.0.0.0:6379:6379
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    restart: always
+    image: redis
+  static:
+    container_name: static_website
+    build: /home/zakaria/Desktop/Inception/srcs/requirements/bonus/static/.
+    ports:
+      - 0.0.0.0:8080:8080
+    networks:
+      - inception
+    restart: always
+    image: static
+  cadvisor:
+    container_name: cadvisor
+    build: /home/zakaria/Desktop/Inception/srcs/requirements/bonus/cadvisor/.
+    ports:
+      - 0.0.0.0:8081:8081
+    volumes:
+      - /var/run:/var/run:ro
+      - /:/rootfs:ro
+      - /sys:/sys:ro
+      - /dev/disk/:/dev/disk:ro 
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: always
+    networks:
+      - inception
+    image: cadvisor
+
+
+volumes:
+  wordpress:
+    name: wordpress
+    driver : local
+    driver_opts :
+      o : bind
+      device : /home/zbentale/data/wordpress/
+      type: none
+  mariadb:
+    name: mariadb
+    driver : local
+    driver_opts :
+      o : bind
+      device : /home/zbentale/data/mariadb/
+      type: none
+
+networks:
+  inception:
+    name: inception
+    driver: bridge
